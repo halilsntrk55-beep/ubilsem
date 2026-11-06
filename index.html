@@ -83,7 +83,7 @@ function applyStudentChange(current,change){
  return next;
 }
 function studentEntries(c){return Object.values(roster[c.id]||{}).sort((a,b)=>a.name.localeCompare(b.name,'tr'))}
-function lessonStudents(c,record){return record?Object.keys(record.students||{}).map(id=>roster[c.id]?.[id]||{id,name:'Geçmiş öğrenci kaydı'}).sort((a,b)=>a.name.localeCompare(b.name,'tr')):students(c)}
+function lessonStudents(c,record){const people=new Map(students(c).map(s=>[s.id,s]));for(const id of Object.keys(record?.students||{}))if(!people.has(id))people.set(id,roster[c.id]?.[id]||{id,name:'Geçmiş öğrenci kaydı'});return [...people.values()].sort((a,b)=>a.name.localeCompare(b.name,'tr'))}
 function renderStudents(){
  const c=findClass(selectedClass)||CLASSES[0];selectedClass=c.id;
  const people=students(c),archived=studentEntries(c).filter(s=>s.inactive);
